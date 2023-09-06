@@ -1,0 +1,15 @@
+{:paths ["src" "resources"]
+
+ :deps
+ {org.clojure/clojure {:mvn/version "1.11.1"}
+  reagent/reagent {:mvn/version "1.2.0"}
+  }
+
+ :aliases
+ {:dev
+  {:extra-paths ["dev"]
+   :extra-deps  {djblue/portal {:mvn/version "RELEASE"}}}
+
+  :test
+  {:extra-paths ["test"]
+   :extra-deps  {lambdaisland/kaocha {:mvn/version "1.86.1355"}}}}}
