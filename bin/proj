@@ -6,7 +6,7 @@
 (lioss/main
  {:license          :mpl
   :inception-year   2023
-  :description      ""
+  :description      "deform / with-form macros for reagent"
   :group-id         "com.lambdaisland"})
 
 ;; Local Variables:
