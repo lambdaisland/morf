@@ -18,12 +18,19 @@
               formdef)]
     [@p form]))
 
+(defprotocol IMorf
+  (reinit! [r]))
+
 (defn- compute-bindings [binding form placeholders init]
   (let [lookup (gensym "lookup")]
     (conj (into []
                 (mapcat (fn [p]
-                          [p `(reagent.core/atom ~(get init p))])
+                          [p `(let [init# ~(get init p)]
+                                (cljs.core/specify! (reagent.core/atom init#)
+                                  IMorf
+                                  (~'reinit! [this#] (reset! this# init#))))])
                         placeholders))
+
           lookup
           (zipmap
            (map (comp keyword str) placeholders)
@@ -32,10 +39,13 @@
           binding
           `(cljs.core/specify! (reagent.core/reaction ~form)
              cljs.core/ILookup
-
              (~'-lookup
               ([_# k#] (~'-lookup ~lookup k#))
-              ([_# k# not-found#] (~'-lookup ~lookup k# not-found#)))))))
+              ([_# k# not-found#] (~'-lookup ~lookup k# not-found#)))
+             IMorf
+             (~'reinit! [_#]
+              (doseq [p# ~(into [] placeholders)]
+                (reinit! p#)))))))
 
 #?(:clj
    (defmacro with-form [[binding formdef & {:keys [init]}] & body]
@@ -49,5 +59,4 @@
      (let [[placeholders form] (find-placeholders formdef)]
        `(do
           ~@(for [[bind form] (partition 2 (compute-bindings binding form placeholders init))]
-              `(def ~bind ~form))
-          ))))
+              `(def ~bind ~form))))))
