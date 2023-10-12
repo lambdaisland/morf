@@ -14,13 +14,13 @@
 To use the latest release, add the following to your `deps.edn` ([Clojure CLI](https://clojure.org/guides/deps_and_cli))
 
 ```
-com.lambdaisland/morf {:mvn/version "0.1.4"}
+com.lambdaisland/morf {:mvn/version "0.2.7"}
 ```
 
 or add the following to your `project.clj` ([Leiningen](https://leiningen.org/))
 
 ```
-[com.lambdaisland/morf "0.1.4"]
+[com.lambdaisland/morf "0.2.7"]
 ```
 <!-- /installation -->
 
