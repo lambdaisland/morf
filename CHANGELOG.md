@@ -1,3 +1,11 @@
+# Unreleased
+
+## Added
+
+## Fixed
+
+## Changed
+
 # 0.2.7 (2023-10-12 / 513505f)
 
 ## Added

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.lambdaisland</groupId>
   <artifactId>morf</artifactId>
-  <version>0.1.4</version>
+  <version>0.2.7</version>
   <name>morf</name>
   <description>deform / with-form macros for reagent</description>
   <url>https://github.com/lambdaisland/morf</url>
@@ -25,7 +25,7 @@
     <url>https://github.com/lambdaisland/morf</url>
     <connection>scm:git:git://github.com/lambdaisland/morf.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/lambdaisland/morf.git</developerConnection>
-    <tag>b45dc4691671ce9d127bb1244f5fbf4d81953f55</tag>
+    <tag>026eaaf6d0f726315f6191aa427e49cfa367a3b0</tag>
   </scm>
   <dependencies>
     <dependency>
@@ -66,7 +66,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <git-revision>b45dc4691671ce9d127bb1244f5fbf4d81953f55</git-revision>
+              <git-revision>026eaaf6d0f726315f6191aa427e49cfa367a3b0</git-revision>
             </manifestEntries>
           </archive>
         </configuration>
