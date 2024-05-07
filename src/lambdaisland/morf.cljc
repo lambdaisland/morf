@@ -55,8 +55,11 @@
           ~@body))))
 
 #?(:clj
-   (defmacro deform [binding formdef & {:keys [init]}]
+   (defmacro deform [binding formdef & {:keys [init defonce?]}]
      (let [[placeholders form] (find-placeholders formdef)]
        `(do
           ~@(for [[bind form] (partition 2 (compute-bindings binding form placeholders init))]
-              `(def ~bind ~form))))))
+              (if defonce?
+                `(defonce ~bind ~form)
+                `(def ~bind ~form)))))))
+
