@@ -14,13 +14,13 @@ Morf is a state / "form" utility library for Reagent.
 To use the latest release, add the following to your `deps.edn` ([Clojure CLI](https://clojure.org/guides/deps_and_cli))
 
 ```
-com.lambdaisland/morf {:mvn/version "0.2.7"}
+com.lambdaisland/morf {:mvn/version "0.3.14"}
 ```
 
 or add the following to your `project.clj` ([Leiningen](https://leiningen.org/))
 
 ```
-[com.lambdaisland/morf "0.2.7"]
+[com.lambdaisland/morf "0.3.14"]
 ```
 <!-- /installation -->
 
