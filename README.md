@@ -4,7 +4,7 @@
 [![cljdoc badge](https://cljdoc.org/badge/com.lambdaisland/morf)](https://cljdoc.org/d/com.lambdaisland/morf) [![Clojars Project](https://img.shields.io/clojars/v/com.lambdaisland/morf.svg)](https://clojars.org/com.lambdaisland/morf)
 <!-- /badges -->
 
-
+Morf is a state / "form" utility library for Reagent.
 
 ## Features
 
@@ -28,7 +28,99 @@ or add the following to your `project.clj` ([Leiningen](https://leiningen.org/))
 
 `with-form` / `deform` macros for Reagent.
 
+If you've ever worked in reagent for a long enough time, there is one piece of
+glue which is really missing.
+
+A way to create and hold state into buckets. Re-frame choose to go about solving
+this problem by having a single global state, and then using it's conventions to
+update that state. But even re-frame will leave you stranded when it come's to
+organising local component state.
+
+Now something like re-frame (and other home grown solutions following the same path):
+1. Global state and managing it requires creation of either multiple functions, reactions, cursors etc.
+2. Local component state is also littered with `reagent/atom` and
+   `reagent/cursor` calls. In the age of react, we seem to have forgotten the
+   simplicity of the html `<form>` which acted a way to house some state
+   together.
+
+Now `morf` tries to solve both of these problems.
+
+To reduce the ceremony, what if you we could wrap the good 'ol reagent atoms
+with some sugar? (Check `deform` usage below)
+
+And for local component state, well you would say that some of this is the job
+of `reagent/with-let`. And I would certainly agree. For state which is
+absolutely local to a component, this makes a lot of sense. But even then
+managing local state cleanly often ends up with creating loads of atoms and
+reactions locally. (Check `with-form` usage below)
+
+And when state needs to be passed down, around, up and about! In those cases we
+need to remove state from the component heirarchy and house it at the top level.
+
 ## Usage
+
+```clojure
+(ns ...
+  (require [lambdaisland.morf :as morf])
+  
+(morf/deform !config
+  {:question !question
+   :answer-to-life 42
+   :answer !answer}
+  {:init {!question "What's your name?"}
+   :defonce? false})
+   
+(defn ask-question-reagent-component []
+  [:div
+    [:input {:on-change (fn [e] (reset! !question (.. e -target -value)))}]
+    [:p @!question]
+    [:p @!answer]])
+```
+
+Using the `deform` macro allows the creation of multiple reagent atoms, and reactions.
+
+Every symbol inside of the body starting with a `!` or `?` will be converted into a reagent atom.
+
+The top level binding (`!config` in this case) will be a reagent reaction which
+updates whenever any of the nested atoms update.
+
+The above macro will roughly produce code like this:
+```clojure
+(def !question (reagent/atom "What's your name?"))
+(def !answer (reagent/atom nil))
+(def !config (reagent/reaction {:question !question :answer !answer :answer-to-life 42}))
+```
+
+Here `!config` reaction has been made to implement the `ILookup` protocol, so you can directly do:
+
+```clojure
+(:answer-to-life @!config)
+```
+
+For local components imagine you have a component as follows:
+
+```
+(defn ask-question-component []
+  (reagent/with-let [!form (reagent/atom {})
+                     !age (reagent/cursor !form [:age])
+                     !first-name (reagent/cursor !form [:first-name])
+                     !last-name (reagent/cursor !form [:last-name])
+                     !full-name (reagent/reaction (str @!first-name @!last-name))
+                     !spinner-timeout (reagent/atom 10)]
+    ...))
+```
+
+Wouldn't it be nice if you could something like this:
+```
+(defn ask-question-component []
+  (morf/with-form [!form {:age !age
+                          :first-name !first-name
+                          :last-name !last-name
+                          ;; (:full-name @!form) will be automatically converted into a reaction
+                          :full-name (str !first-name !last-name)
+                          :spinner-timeout 10}]
+    ...)) 
+```
 
 <!-- opencollective -->
 ## Lambda Island Open Source

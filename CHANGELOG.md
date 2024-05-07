@@ -2,6 +2,8 @@
 
 ## Added
 
+- Extra parameter `:defonce?` to allow `defonce` bindings with `deform`
+
 ## Fixed
 
 ## Changed
