@@ -30,6 +30,30 @@ or add the following to your `project.clj` ([Leiningen](https://leiningen.org/))
 
 ## Usage
 
+```clojure
+(ns ...
+  (require [lambdaisland.morf :as morf])
+  
+(morf/deform !config
+  {:question !question
+   :answer !answer}
+  {:init {!question "What's your name?"}
+   :defonce? true})
+   
+(defn ask-question-reagent-component []
+  [:div
+    [:input {:on-change (fn [e] (reset! !question (.. e -target -value)))}]
+    [:p @!question]
+    [:p @!answer]])
+```
+
+Using the `deform` macro allows the creation of multiple reagent atoms, and reactions.
+
+Every symbol inside of the body starting with a `!` or `?` will be converted into a reagent atom.
+
+The top level binding (`!config` in this case) will be a reagent reaction which
+updates whenever any of the nested atoms update.
+
 <!-- opencollective -->
 ## Lambda Island Open Source
 
