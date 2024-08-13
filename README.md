@@ -122,6 +122,12 @@ Wouldn't it be nice if you could something like this:
     ...)) 
 ```
 
+## Prior Art
+
+Morf in heavily inspired by
+[mhuebert/inside-out](https://github.com/mhuebert/inside-out). Matt really came
+up with the idea, but Inside-out has some heavy handed dependencies, and we only needed a fraction of the functionality, so we created Morf.
+
 <!-- opencollective -->
 ## Lambda Island Open Source
 
