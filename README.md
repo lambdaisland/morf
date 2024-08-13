@@ -122,6 +122,22 @@ Wouldn't it be nice if you could something like this:
     ...)) 
 ```
 
+This is particularly useful for actual UI forms, for example (pseudocode).
+Notice how you can reference the individual atoms like `?name`, then in the end
+get the complete `@user` value in one go.
+
+```clj
+(with-form [user {:name ?name
+                  :email ?email
+                  :website ?website}]
+  [:form {:on-submit (fn []
+                       (transact! @user))}
+   [:input {:value @?name :on-change #(reset! ?name (.. % -target -value))}]
+   [:input {:value @?email :on-change #(reset! ?email (.. % -target -value))}]
+   [:input {:value @?website :on-change #(reset! ?website (.. % -target -value))}]
+   [:input {:type "submit"}]])
+```
+
 ## Prior Art
 
 Morf in heavily inspired by
