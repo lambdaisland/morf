@@ -2,9 +2,8 @@
 
 ## Added
 
-## Fixed
-
-## Changed
+- docstrings
+- deform-once
 
 # 0.3.14 (2024-05-07 / d23e242)
 
