@@ -1,3 +1,11 @@
+# Unreleased
+
+## Added
+
+## Fixed
+
+## Changed
+
 # 0.4.20 (2024-10-08 / 0ccc7ba)
 
 ## Added
