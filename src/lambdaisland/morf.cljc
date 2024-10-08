@@ -1,4 +1,7 @@
 (ns lambdaisland.morf
+  "Morf provides syntactic sugar over reagent atoms and reactions, either inside a
+  component for component-local state, using [[with-form]], or at the top level
+  for shared state with [[deform]]."
   (:require [clojure.walk :as walk])
   #?(:cljs (:require-macros [lambdaisland.morf])))
 
@@ -48,14 +51,26 @@
                 (reinit! p#)))))))
 
 #?(:clj
-   (defmacro with-form [[binding formdef & {:keys [init]}] & body]
+   (defmacro with-form
+     "Define a new 'form' to be used within the scope of the block, typically used
+  inside a Reagent component. The form itself is a reaction and can be
+  dereferenced. Any symbols in the form starting with ? or ! are bound to
+  ratoms, and can be individually set or read."
+     [[binding formdef & {:keys [init]}] & body]
      (let [[placeholders form] (find-placeholders formdef)]
        `(reagent.core/with-let
           ~(compute-bindings binding form placeholders init)
           ~@body))))
 
 #?(:clj
-   (defmacro deform [binding formdef & {:keys [init defonce?]}]
+   (defmacro deform
+     "Define a new 'form', bound to the given symbol (var) at the top level. The form
+  itself is a reaction and can be dereferenced. Any symbols in the form starting
+  with ? or ! are bound to ratoms, and can be individually set or read.
+
+  Use `:init` to specify initial values for the ratoms.
+  "
+     [binding formdef & {:keys [init defonce?]}]
      (let [[placeholders form] (find-placeholders formdef)]
        `(do
           ~@(for [[bind form] (partition 2 (compute-bindings binding form placeholders init))]
@@ -63,3 +78,9 @@
                 `(defonce ~bind ~form)
                 `(def ~bind ~form)))))))
 
+#?(:clj
+   (defmacro deform-once
+     "Like [[deform]], but expands to a `defonce` instead of a `def`. Good for
+  maintaining state across reloads."
+     [binding formdef & opts]
+     `(deform ~binding ~formdef ~@opts)))
