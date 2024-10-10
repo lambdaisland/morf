@@ -56,10 +56,11 @@
   inside a Reagent component. The form itself is a reaction and can be
   dereferenced. Any symbols in the form starting with ? or ! are bound to
   ratoms, and can be individually set or read."
+     {:style/indent [1]}
      [[binding formdef & {:keys [init]}] & body]
      (let [[placeholders form] (find-placeholders formdef)]
        `(reagent.core/with-let
-          ~(compute-bindings binding form placeholders init)
+            ~(compute-bindings binding form placeholders init)
           ~@body))))
 
 #?(:clj
@@ -68,19 +69,26 @@
   itself is a reaction and can be dereferenced. Any symbols in the form starting
   with ? or ! are bound to ratoms, and can be individually set or read.
 
-  Use `:init` to specify initial values for the ratoms.
-  "
-     [binding formdef & {:keys [init defonce?]}]
-     (let [[placeholders form] (find-placeholders formdef)]
+  Use `:init` to specify initial values for the ratoms."
+     {:style/indent [1]}
+     [binding & more]
+     (let [doc (when (string? (first more)) (first more))
+           [formdef & more] (if doc (rest more) more)
+           {:keys [init defonce?]} more
+           [placeholders form] (find-placeholders formdef)]
        `(do
           ~@(for [[bind form] (partition 2 (compute-bindings binding form placeholders init))]
               (if defonce?
-                `(defonce ~bind ~form)
-                `(def ~bind ~form)))))))
+                `(defonce ~(cond-> bind
+                             doc
+                             (with-meta {:doc doc})) ~form)
+                `(def ~bind ~@(when doc [doc]) ~form)))))))
+
 
 #?(:clj
    (defmacro deform-once
      "Like [[deform]], but expands to a `defonce` instead of a `def`. Good for
   maintaining state across reloads."
+     {:style/indent [1]}
      [binding formdef & opts]
-     `(deform ~binding ~formdef ~@opts)))
+     `(deform ~binding ~formdef ~@opts :defonce? true)))

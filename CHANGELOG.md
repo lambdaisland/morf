@@ -2,9 +2,8 @@
 
 ## Added
 
-## Fixed
-
-## Changed
+- Add ability to add docstrings
+- Add style/indent metadata
 
 # 0.4.20 (2024-10-08 / 0ccc7ba)
 
